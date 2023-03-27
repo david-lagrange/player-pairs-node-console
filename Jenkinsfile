@@ -18,6 +18,17 @@ pipeline {
    }
   }
   
+  stage('Install dependencies and test') {
+    steps {
+        script {
+            def nodejs = tool name: 'your_nodejs_installation', type: 'jenkins.plugins.nodejs.tools.NodeJSInstallation'
+            env.PATH = "${nodejs}/bin:${env.PATH}"
+        }
+        sh 'npm ci'
+        sh 'npm test'
+    }
+  }
+  
   stage('Deploy to EC2') {
     steps {
         withCredentials([aws(credentialsId: 'aws-credentials', accessKeyVariable: 'AWS_ACCESS_KEY_ID', secretKeyVariable: 'AWS_SECRET_ACCESS_KEY')]) {

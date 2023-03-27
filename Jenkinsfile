@@ -10,7 +10,7 @@ pipeline {
  stages {
   stage('Deploy to EC2') {
     steps {
-        withCredentials([aws(credentialsId: 'aws_credentials', accessKeyVariable: 'AWS_ACCESS_KEY_ID', secretKeyVariable: 'AWS_SECRET_ACCESS_KEY')]) {
+        withCredentials([aws(credentialsId: 'aws-credentials', accessKeyVariable: 'AWS_ACCESS_KEY_ID', secretKeyVariable: 'AWS_SECRET_ACCESS_KEY')]) {
             sh '''
                 # Echo the credentials (for testing purposes only)
                 echo "AWS Access Key ID: ${AWS_ACCESS_KEY_ID}"

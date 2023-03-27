@@ -12,7 +12,7 @@ pipeline {
   stage('Checkout') {
    steps {
      git(
-         url: 'https://github.com/LaGrange-Group/player-pairs-node-console.git'',
+         url: 'https://github.com/LaGrange-Group/player-pairs-node-console.git',
          branch: 'main'
      )
    }

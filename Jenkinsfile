@@ -30,11 +30,14 @@ pipeline {
   
   stage('Build and push Docker image') {
     steps {
-
+        script {
+            def dockerTool = tool name: 'docker-tool', type: 'org.jenkinsci.plugins.docker.commons.tools.DockerTool'
+            env.PATH = "${dockerTool}/bin:${env.PATH}"
+        }
         sh 'docker build -t ${DOCKERHUB_USERNAME}/your_repository_name:latest .'
-         withCredentials([usernamePassword(credentialsId: 'your_dockerhub_credentials_id', usernameVariable: 'DOCKER_USERNAME', passwordVariable: 'DOCKER_PASSWORD')]) {
-             sh 'echo ${DOCKER_PASSWORD} | docker login -u ${DOCKER_USERNAME} --password-stdin'
-         }
+        withCredentials([usernamePassword(credentialsId: 'your_dockerhub_credentials_id', usernameVariable: 'DOCKER_USERNAME', passwordVariable: 'DOCKER_PASSWORD')]) {
+            sh 'docker login -u ${DOCKER_USERNAME} -p ${DOCKER_PASSWORD}'
+        }
         sh 'docker push ${DOCKERHUB_USERNAME}/player_pairs_node:latest'
     }
   }

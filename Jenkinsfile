@@ -11,7 +11,7 @@ pipeline {
   
   stage('Checkout') {
     steps {
-        git 'https://github.com/your_username/your_repository.git'
+        git 'https://github.com/LaGrange-Group/player-pairs-node-console.git'
     }
   }
   

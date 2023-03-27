@@ -35,7 +35,7 @@ pipeline {
             env.PATH = "${dockerTool}/bin:${env.PATH}"
         }
         sh 'docker build -t ${DOCKERHUB_USERNAME}/your_repository_name:latest .'
-        withCredentials([usernamePassword(credentialsId: 'your_dockerhub_credentials_id', usernameVariable: 'DOCKER_USERNAME', passwordVariable: 'DOCKER_PASSWORD')]) {
+        withCredentials([usernamePassword(credentialsId: 'docker-hub-repo', usernameVariable: 'DOCKER_USERNAME', passwordVariable: 'DOCKER_PASSWORD')]) {
             sh 'docker login -u ${DOCKER_USERNAME} -p ${DOCKER_PASSWORD}'
         }
         sh 'docker push ${DOCKERHUB_USERNAME}/player_pairs_node:latest'

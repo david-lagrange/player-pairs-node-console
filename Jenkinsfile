@@ -32,7 +32,7 @@ pipeline {
   stage('Build and push Docker image') {
     steps {
         script {
-            def dockerTool = tool name: 'your_docker_installation', type: 'org.jenkinsci.plugins.docker.commons.tools.DockerTool'
+            def dockerTool = tool name: 'docker-tool', type: 'org.jenkinsci.plugins.docker.commons.tools.DockerTool'
             env.PATH = "${dockerTool}/bin:${env.PATH}"
         }
         sh 'docker build -t ${DOCKERHUB_USERNAME}/your_repository_name:latest .'

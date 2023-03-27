@@ -9,11 +9,13 @@ pipeline {
   
  stages {
   
-  steps {
-    git(
-        url: 'https://github.com/LaGrange-Group/player-pairs-node-console.git'',
-        branch: 'main'
-    )
+  stage('Checkout') {
+   steps {
+     git(
+         url: 'https://github.com/LaGrange-Group/player-pairs-node-console.git'',
+         branch: 'main'
+     )
+   }
   }
   
   stage('Deploy to EC2') {

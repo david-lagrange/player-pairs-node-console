@@ -29,6 +29,20 @@ pipeline {
     }
   }
   
+  stage('Build and push Docker image') {
+    steps {
+        script {
+            def dockerTool = tool name: 'your_docker_installation', type: 'org.jenkinsci.plugins.docker.commons.tools.DockerTool'
+            env.PATH = "${dockerTool}/bin:${env.PATH}"
+        }
+        sh 'docker build -t ${DOCKERHUB_USERNAME}/your_repository_name:latest .'
+        withCredentials([usernamePassword(credentialsId: 'your_dockerhub_credentials_id', usernameVariable: 'DOCKER_USERNAME', passwordVariable: 'DOCKER_PASSWORD')]) {
+            sh 'echo ${DOCKER_PASSWORD} | docker login -u ${DOCKER_USERNAME} --password-stdin'
+        }
+        sh 'docker push ${DOCKERHUB_USERNAME}/your_repository_name:latest'
+    }
+  }
+  
   stage('Deploy to EC2') {
     steps {
         withCredentials([aws(credentialsId: 'aws-credentials', accessKeyVariable: 'AWS_ACCESS_KEY_ID', secretKeyVariable: 'AWS_SECRET_ACCESS_KEY')]) {

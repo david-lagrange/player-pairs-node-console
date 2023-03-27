@@ -21,7 +21,7 @@ pipeline {
   stage('Install dependencies and test') {
     steps {
         script {
-            def nodejs = tool name: 'your_nodejs_installation', type: 'jenkins.plugins.nodejs.tools.NodeJSInstallation'
+            def nodejs = tool name: 'node19', type: 'jenkins.plugins.nodejs.tools.NodeJSInstallation'
             env.PATH = "${nodejs}/bin:${env.PATH}"
         }
         sh 'npm ci'

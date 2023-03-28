@@ -26,6 +26,7 @@ pipeline {
         sh 'npm ci'
         sh 'npm test'
         sh 'echo "new test"'
+        sh 'echo "${env.BUILD_NUMBER}"'
     }
   }
   
@@ -35,11 +36,11 @@ pipeline {
             def dockerTool = tool name: 'docker-tool', type: 'org.jenkinsci.plugins.docker.commons.tools.DockerTool'
             env.PATH = "${dockerTool}/bin:${env.PATH}"
         }
-        sh 'docker build -t ${DOCKERHUB_USERNAME}/player_pairs_node:${env.BUILD_NUMBER} .'
+        sh 'docker build -t ${DOCKERHUB_USERNAME}/player_pairs_node:latest .'
         withCredentials([usernamePassword(credentialsId: 'docker-hub-repo', usernameVariable: 'DOCKER_USERNAME', passwordVariable: 'DOCKER_PASSWORD')]) {
             sh 'docker login -u ${DOCKER_USERNAME} -p ${DOCKER_PASSWORD}'
         }
-        sh 'docker push ${DOCKERHUB_USERNAME}/player_pairs_node:${env.BUILD_NUMBER}'
+        sh 'docker push ${DOCKERHUB_USERNAME}/player_pairs_node:latest'
     }
   }
   

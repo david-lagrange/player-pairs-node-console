@@ -1,5 +1,5 @@
 def getNewImageTag() {
-    def repo = "${env.DOCKERHUB_USERNAME}/player_pairs_node"
+    def repo = "${env.DOCKERHUB_USERNAME}/your_repository_name"
     def apiUrl = "https://registry.hub.docker.com/v2/repositories/${repo}/tags?page_size=100"
 
     def tagsJson = sh(
@@ -9,11 +9,18 @@ def getNewImageTag() {
 
     def parsedJson = new groovy.json.JsonSlurper().parseText(tagsJson)
     def numericTags = parsedJson.results.findAll { it.name.isNumber() }.collect { it.name.toInteger() }
-    def maxTag = numericTags ? numericTags.max() : 0
+    
+    def maxTag = 0
+    for (tag in numericTags) {
+        if (tag > maxTag) {
+            maxTag = tag
+        }
+    }
 
     def newTag = maxTag + 1
     return newTag.toString()
 }
+
 
 
 pipeline {

@@ -52,13 +52,14 @@ pipeline {
                      sh 'CONTAINER_NAME="player-pairs-container"'
                      sh "IMAGE_NAME=\\${DOCKERHUB_USERNAME}/player_pairs_node"
                      sh "IMAGE_TAG=\\${env.BUILD_NUMBER}"
-                  
+                     sh """
                      ssh -o StrictHostKeyChecking=no -i $SSH_PRIVATE_KEY ${REMOTE_USER}@${REMOTE_HOST} "\
                         docker pull ${IMAGE_NAME}:${IMAGE_TAG} && \
                         docker stop ${CONTAINER_NAME} || true && \
                         docker rm ${CONTAINER_NAME} || true && \
                         docker run -d --name ${CONTAINER_NAME} ${IMAGE_NAME}:${IMAGE_TAG}
                     "
+                    """
                  }
              }
          }

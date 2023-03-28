@@ -1,3 +1,17 @@
+import groovy.json.JsonSlurper
+
+def getSuccessfulBuildCount() {
+    def jobName = env.JOB_NAME
+    def jenkinsUrl = env.JENKINS_URL
+    def buildDataUrl = "${jenkinsUrl}job/${jobName}/api/json?tree=allBuilds[result]"
+    
+    def jsonResponse = new URL(buildDataUrl).getText()
+    def jsonSlurper = new JsonSlurper()
+    def buildData = jsonSlurper.parseText(jsonResponse)
+
+    return buildData.allBuilds.count { build -> build.result == "SUCCESS" }
+}
+
 pipeline {
  
  agent any
@@ -35,12 +49,13 @@ pipeline {
         script {
             def dockerTool = tool name: 'docker-tool', type: 'org.jenkinsci.plugins.docker.commons.tools.DockerTool'
             env.PATH = "${dockerTool}/bin:${env.PATH}"
+            def successfulBuilds = getSuccessfulBuildCount()
         }
-        sh "docker build -t ${DOCKERHUB_USERNAME}/player_pairs_node:${env.BUILD_NUMBER} ."
+        sh "docker build -t ${DOCKERHUB_USERNAME}/player_pairs_node:${env.successfulBuilds} ."
         withCredentials([usernamePassword(credentialsId: 'docker-hub-repo', usernameVariable: 'DOCKER_USERNAME', passwordVariable: 'DOCKER_PASSWORD')]) {
             sh 'docker login -u ${DOCKER_USERNAME} -p ${DOCKER_PASSWORD}'
         }
-        sh "docker push ${DOCKERHUB_USERNAME}/player_pairs_node:${env.BUILD_NUMBER}"
+        sh "docker push ${DOCKERHUB_USERNAME}/player_pairs_node:${env.successfulBuilds}"
     }
   }
   

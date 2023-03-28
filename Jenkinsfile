@@ -47,13 +47,13 @@ pipeline {
          withCredentials([aws(credentialsId: 'aws-credentials', accessKeyVariable: 'AWS_ACCESS_KEY_ID', secretKeyVariable: 'AWS_SECRET_ACCESS_KEY')]) {
              withCredentials([sshUserPrivateKey(credentialsId: 'pp-server-credentials', keyFileVariable: 'SSH_PRIVATE_KEY')]) {
                  sshagent(credentials: ['pp-server-credentials']) {
-                     sh '''
+                     sh """
                          # Replace the variables below with the actual values
-                         REMOTE_USER="ubuntu"
-                         REMOTE_HOST="44.210.144.192"
+                         REMOTE_USER=ubuntu
+                         REMOTE_HOST=44.210.144.192
                          CONTAINER_NAME="player-pairs-container"
-                         IMAGE_NAME="${DOCKERHUB_USERNAME}/player_pairs_node"
-                         IMAGE_TAG="${env.BUILD_NUMBER}"
+                         IMAGE_NAME=${DOCKERHUB_USERNAME}/player_pairs_node
+                         IMAGE_TAG=${env.BUILD_NUMBER}
 
                          # SSH into the server
                          # ssh -o StrictHostKeyChecking=no -i $SSH_PRIVATE_KEY $REMOTE_USER@$REMOTE_HOST "\
@@ -67,7 +67,7 @@ pipeline {
                              # Run the new image
                              # docker run --name $CONTAINER_NAME -d $IMAGE_NAME:$IMAGE_TAG
                          # "
-                     '''
+                     """
                  }
              }
          }

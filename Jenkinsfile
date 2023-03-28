@@ -66,7 +66,7 @@ pipeline {
 
                              # Run the new image
                              # docker run --name $CONTAINER_NAME -d $IMAGE_NAME:$IMAGE_TAG
-                         "
+                         # "
                      '''
                  }
              }

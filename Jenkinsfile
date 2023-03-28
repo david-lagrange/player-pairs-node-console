@@ -1,28 +1,3 @@
-def getNewImageTag() {
-    def repo = "${env.DOCKERHUB_USERNAME}/your_repository_name"
-    def apiUrl = "https://registry.hub.docker.com/v2/repositories/${repo}/tags?page_size=100"
-
-    def tagsJson = sh(
-        script: "curl -s '${apiUrl}'",
-        returnStdout: true
-    )
-
-    def parsedJson = new groovy.json.JsonSlurper().parseText(tagsJson)
-    def numericTags = parsedJson.results.findAll { it.name.isNumber() }.collect { it.name.toInteger() }
-    
-    def maxTag = 0
-    for (tag in numericTags) {
-        if (tag > maxTag) {
-            maxTag = tag
-        }
-    }
-
-    def newTag = maxTag + 1
-    return newTag.toString()
-}
-
-
-
 pipeline {
  
  agent any
@@ -58,14 +33,12 @@ pipeline {
         script {
             def dockerTool = tool name: 'docker-tool', type: 'org.jenkinsci.plugins.docker.commons.tools.DockerTool'
             env.PATH = "${dockerTool}/bin:${env.PATH}"
-            def newTag = getNewImageTag()
-            env.DOCKER_IMAGE_TAG = newTag
         }
-        sh "docker build -t ${DOCKERHUB_USERNAME}/player_pairs_node:${env.DOCKER_IMAGE_TAG} ."
+        sh "docker build -t ${DOCKERHUB_USERNAME}/player_pairs_node:${env.BUILD_NUMBER} ."
         withCredentials([usernamePassword(credentialsId: 'docker-hub-repo', usernameVariable: 'DOCKER_USERNAME', passwordVariable: 'DOCKER_PASSWORD')]) {
             sh 'docker login -u ${DOCKER_USERNAME} -p ${DOCKER_PASSWORD}'
         }
-        sh "docker push ${DOCKERHUB_USERNAME}/player_pairs_node:${env.DOCKER_IMAGE_TAG}"
+        sh "docker push ${DOCKERHUB_USERNAME}/player_pairs_node:${env.BUILD_NUMBER}"
     }
   }
   

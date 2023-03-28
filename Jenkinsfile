@@ -49,11 +49,11 @@ pipeline {
                  sshagent(credentials: ['pp-server-credentials']) {
                      sh """
                          # Replace the variables below with the actual values
-                         REMOTE_USER=ubuntu
-                         REMOTE_HOST=44.210.144.192
-                         CONTAINER_NAME="player-pairs-container"
-                         IMAGE_NAME=${DOCKERHUB_USERNAME}/player_pairs_node
-                         IMAGE_TAG=${env.BUILD_NUMBER}
+                         REMOTE_USER=\"ubuntu\"
+                         REMOTE_HOST=\"44.210.144.192\"
+                         CONTAINER_NAME=\"player-pairs-container\"
+                         IMAGE_NAME=\"\${DOCKERHUB_USERNAME}/player_pairs_node\"
+                         IMAGE_TAG=\"\${env.BUILD_NUMBER}\"
 
                          # SSH into the server
                          # ssh -o StrictHostKeyChecking=no -i $SSH_PRIVATE_KEY $REMOTE_USER@$REMOTE_HOST "\

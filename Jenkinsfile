@@ -25,6 +25,7 @@ pipeline {
         }
         sh 'npm ci'
         sh 'npm test'
+        sh 'echo "new test"'
     }
   }
   
